@@ -1,8 +1,8 @@
 // Create a new Phaser game instance
 const config = {
   type: Phaser.AUTO,
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: window.innerWidth * window.devicePixelRatio,
+  height: window.innerHeight * window.devicePixelRatio,
   backgroundColor: "#ffffff",
   physics: {
     default: "arcade",
@@ -43,8 +43,8 @@ function preload() {
 
 // Create game objects
 function create() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const width = window.innerWidth * window.devicePixelRatio;
+  const height = window.innerHeight * window.devicePixelRatio;
 
   arrow = this.physics.add.sprite(width / 2, height / 2, "arrow");
   arrow.visible = false;
@@ -80,7 +80,10 @@ function create() {
 
   // Resize the game to fit the new window dimensions
   window.addEventListener("resize", function () {
-    game.scale.resize(window.innerWidth, window.innerHeight);
+    const newWidth = window.innerWidth * window.devicePixelRatio;
+    const newHeight = window.innerHeight * window.devicePixelRatio;
+
+    game.scale.resize(newWidth, newHeight);
   });
 }
 
