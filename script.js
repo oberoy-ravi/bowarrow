@@ -6,13 +6,13 @@ const config = {
   backgroundColor: "#ffffff",
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   physics: {
     default: "arcade",
     arcade: {
       gravity: {
-        y: 0
+        y: 0,
       },
       debug: true,
     },
@@ -39,10 +39,14 @@ function preload() {
   this.load.image("bow", "bow.png");
   this.load.image("arrow", "arrow.png");
   this.load.image("target", "target.png");
-  this.load.spritesheet("cheerGirl", "path/to/cheer-girl-spritesheet.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
+  this.load.spritesheet(
+    "cheerGirl",
+    "path/to/cheer-girl-spritesheet.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
 }
 
 // Create game objects
@@ -64,7 +68,6 @@ function create() {
     Phaser.Math.Between(height * 0.2, height * 0.8),
     "target"
   );
-  target.setVelocityX(-200);
   target.setScale(0.15);
 
   cheerGirl = this.add.sprite(width / 2, height / 2, "cheerGirl");
@@ -82,35 +85,21 @@ function create() {
 
   this.physics.add.collider(arrow, target, handleHit, null, this);
 
-  // Resize the game to fit the new window dimensions
-  window.addEventListener("resize", function () {
-    const newWidth = window.innerWidth;
-    const newHeight = window.innerHeight;
-
-    game.scale.resize(newWidth, newHeight);
-  });
+  // Move the target manually
+  moveTarget();
 }
 
 // Update game state
 function update() {
   const width = game.config.width;
-  const height = game.config.height;
 
   const pointer = this.input.activePointer;
   const angle = Phaser.Math.Angle.Between(bow.x, bow.y, pointer.x, pointer.y);
   bow.setRotation(angle);
-
-  if (target.x >= width - target.width) {
-    target.setVelocityX(-200);
-  } else if (target.x <= target.width) {
-    target.setVelocityX(200);
-  }
 }
 
 // Handle arrow shooting
 function handleShoot(pointer) {
-  const width = game.config.width;
-  const height = game.config.height;
   const arrowSpeed = 290;
 
   arrow.visible = true;
@@ -119,13 +108,31 @@ function handleShoot(pointer) {
 
   if (this.input.pointer1.isDown && this.input.pointer2.isDown) {
     const touch1X = this.input.pointer1.x;
-    const touch2X =this.input.pointer2.x;
+    const touch2X = this.input.pointer2.x;
     const targetX = (touch1X + touch2X) / 2;
 
     this.physics.moveTo(arrow, targetX, bow.y, arrowSpeed);
   } else {
-    this.physics.moveTo(arrow, pointer.x, pointer.y, arrowSpeed);
+    this.physics.moveTo(arrow, pointer.x,pointer.y, arrowSpeed);
   }
+}
+
+// Move the target sprite manually
+function moveTarget() {
+  const width = game.config.width;
+  const targetSpeed = 200; // Adjust target speed
+
+  game.time.addEvent({
+    delay: width / targetSpeed,
+    loop: true,
+    callback: () => {
+      if (target.x <= target.width) {
+        target.setVelocityX(targetSpeed);
+      } else if (target.x >= width - target.width) {
+        target.setVelocityX(-targetSpeed);
+      }
+    },
+  });
 }
 
 // Helper function to get a random element from an array
@@ -149,3 +156,4 @@ function handleHit(arrow, target) {
 
   target.setVelocityX(-200);
 }
+    
