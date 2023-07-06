@@ -101,9 +101,9 @@ function update() {
   bow.setRotation(angle);
 
   if (target.x >= width - target.width) {
-    target.setVelocityX(-100);
+    target.setVelocityX(-200);
   } else if (target.x <= target.width) {
-    target.setVelocityX(100);
+    target.setVelocityX(200);
   }
 }
 
