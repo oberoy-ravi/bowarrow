@@ -1,11 +1,11 @@
 // Create a new Phaser game instance
 const config = {
   type: Phaser.AUTO,
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: window.innerWidth * window.devicePixelRatio,
+  height: window.innerHeight * window.devicePixelRatio,
   backgroundColor: "#ffffff",
   scale: {
-    mode: Phaser.Scale.FIT,
+    mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   physics: {
@@ -51,8 +51,8 @@ function preload() {
 
 // Create game objects
 function create() {
-  const width = game.config.width;
-  const height = game.config.height;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
 
   arrow = this.physics.add.sprite(width / 2, height / 2, "arrow");
   arrow.visible = false;
@@ -85,13 +85,21 @@ function create() {
 
   this.physics.add.collider(arrow, target, handleHit, null, this);
 
+  // Resize the game to fit the new window dimensions
+  window.addEventListener("resize", function () {
+    const newWidth = window.innerWidth * window.devicePixelRatio;
+    const newHeight = window.innerHeight * window.devicePixelRatio;
+
+    game.scale.resize(newWidth, newHeight);
+  });
+
   // Move the target manually
   moveTarget();
 }
 
 // Update game state
 function update() {
-  const width = game.config.width;
+  const width = window.innerWidth;
 
   const pointer = this.input.activePointer;
   const angle = Phaser.Math.Angle.Between(bow.x, bow.y, pointer.x, pointer.y);
@@ -107,19 +115,19 @@ function handleShoot(pointer) {
   arrow.y = bow.y;
 
   if (this.input.pointer1.isDown && this.input.pointer2.isDown) {
-    const touch1X = this.input.pointer1.x;
+    const touch1X = thisinput.pointer1.x;
     const touch2X = this.input.pointer2.x;
     const targetX = (touch1X + touch2X) / 2;
 
     this.physics.moveTo(arrow, targetX, bow.y, arrowSpeed);
   } else {
-    this.physics.moveTo(arrow, pointer.x,pointer.y, arrowSpeed);
+    this.physics.moveTo(arrow, pointer.x, pointer.y, arrowSpeed);
   }
 }
 
 // Move the target sprite manually
 function moveTarget() {
-  const width = game.config.width;
+  const width = window.innerWidth;
   const targetSpeed = 200; // Adjust target speed
 
   game.time.addEvent({
@@ -145,10 +153,10 @@ function handleHit(arrow, target) {
   arrow.x = -1000;
   arrow.y = -1000;
 
-  target.x = Phaser.Math.Between(0.2, 0.8) * game.config.width;
+  target.x = Phaser.Math.Between(0.2, 0.8) * window.innerWidth;
   target.y = Phaser.Math.Between(
-    game.config.height * 0.2,
-    game.config.height * 0.8
+    window.innerHeight * 0.2,
+    window.innerHeight * 0.8
   );
 
   target.setVelocityX(-200);
@@ -156,4 +164,3 @@ function handleHit(arrow, target) {
 
   target.setVelocityX(-200);
 }
-    
