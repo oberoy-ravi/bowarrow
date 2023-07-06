@@ -1,9 +1,13 @@
 // Create a new Phaser game instance
 const config = {
   type: Phaser.AUTO,
-  width: window.innerWidth * window.devicePixelRatio,
-  height: window.innerHeight * window.devicePixelRatio,
+  width: window.innerWidth,
+  height: window.innerHeight,
   backgroundColor: "#ffffff",
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
   physics: {
     default: "arcade",
     arcade: {
@@ -43,8 +47,8 @@ function preload() {
 
 // Create game objects
 function create() {
-  const width = window.innerWidth * window.devicePixelRatio;
-  const height = window.innerHeight * window.devicePixelRatio;
+  const width = game.config.width;
+  const height = game.config.height;
 
   arrow = this.physics.add.sprite(width / 2, height / 2, "arrow");
   arrow.visible = false;
@@ -80,8 +84,8 @@ function create() {
 
   // Resize the game to fit the new window dimensions
   window.addEventListener("resize", function () {
-    const newWidth = window.innerWidth * window.devicePixelRatio;
-    const newHeight = window.innerHeight * window.devicePixelRatio;
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
 
     game.scale.resize(newWidth, newHeight);
   });
@@ -90,6 +94,7 @@ function create() {
 // Update game state
 function update() {
   const width = game.config.width;
+  const height = game.config.height;
 
   const pointer = this.input.activePointer;
   const angle = Phaser.Math.Angle.Between(bow.x, bow.y, pointer.x, pointer.y);
@@ -114,7 +119,7 @@ function handleShoot(pointer) {
 
   if (this.input.pointer1.isDown && this.input.pointer2.isDown) {
     const touch1X = this.input.pointer1.x;
-    const touch2X = this.input.pointer2.x;
+    const touch2X =this.input.pointer2.x;
     const targetX = (touch1X + touch2X) / 2;
 
     this.physics.moveTo(arrow, targetX, bow.y, arrowSpeed);
