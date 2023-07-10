@@ -65,7 +65,7 @@ function create() {
     "target"
   );
   target.setVelocityX(-200);
-  target.setScale(0.15);
+  target.setScale(0.75);
 
   cheerGirl = this.add.sprite(width / 2, height / 2, "cheerGirl");
   cheerGirl.visible = false;
